@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.cloudsoft.brooklyn.webapp-plugin</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>  <!-- WEBAPP_PLUGIN_VERSION -->
+  </parent>
+
+  <artifactId>example-webapp-plugin</artifactId>
+
+  <name>Example webapp plugin</name>
+
+  <description>
+    Example of a webapp, which can be added to the Brooklyn karaf server
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.brooklyn</groupId>
+      <artifactId>brooklyn-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.brooklyn</groupId>
+      <artifactId>brooklyn-logback-xml</artifactId>
+    </dependency>
+
+    <!-- REST endpoint -->
+    <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>javax.ws.rs-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${fasterxml.jackson.version}</version>
+    </dependency>
+
+    <!-- TEST DEPENDENCIES -->
+ 
+    <dependency>
+      <groupId>org.apache.brooklyn</groupId>
+      <artifactId>brooklyn-test-support</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.brooklyn</groupId>
+      <artifactId>brooklyn-utils-test-support</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.brooklyn</groupId>
+      <artifactId>brooklyn-core</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <!-- Required to set values in build-metadata.properties -->
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/webapp</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              org.apache.karaf.jaas.config,
+              org.eclipse.jetty.jaas,
+              *
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

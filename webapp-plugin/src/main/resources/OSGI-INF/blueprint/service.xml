@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cxf="http://cxf.apache.org/blueprint/core"
+           xmlns:jaas="http://karaf.apache.org/xmlns/jaas/v1.0.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+
+             http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+             http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+             http://karaf.apache.org/xmlns/jaas/v1.0.0 http://karaf.apache.org/xmlns/jaas/v1.0.0">
+
+    <cxf:bus>
+        <cxf:features>
+            <cxf:logging/>
+        </cxf:features>
+    </cxf:bus>
+
+    <reference id="localManagementContext"
+               interface="org.apache.brooklyn.core.mgmt.internal.ManagementContextInternal"/>
+
+    <jaas:config name="webconsole">
+        <jaas:module className="org.apache.brooklyn.rest.security.jaas.BrooklynLoginModule" flags="required"/>
+    </jaas:config>
+
+    <reference id="shutdownHandler" interface="org.apache.brooklyn.core.mgmt.ShutdownHandler"/>
+
+    <bean class="org.apache.brooklyn.rest.security.jaas.ManagementContextHolder">
+        <property name="managementContext" ref="localManagementContext"/>
+    </bean>
+
+    <bean id="exampleResourceBean" class="io.cloudsoft.brooklyn.webapp.example.ExampleResource"/>
+
+    <jaxrs:server id="exampleRestApi" address="/example">
+        <jaxrs:serviceBeans>
+            <ref component-id="exampleResourceBean"/>
+        </jaxrs:serviceBeans>
+
+        <jaxrs:providers>
+            <bean class="org.apache.brooklyn.rest.util.DefaultExceptionMapper"/>
+            <bean class="org.apache.brooklyn.rest.util.json.BrooklynJacksonJsonProvider"/>
+            <bean class="org.apache.brooklyn.rest.util.FormMapProvider"/>
+            <bean class="org.apache.cxf.jaxrs.security.JAASAuthenticationFilter">
+                <property name="contextName" value="webconsole"/>
+            </bean>
+            <bean class="org.apache.brooklyn.rest.util.ManagementContextProvider">
+                <argument ref="localManagementContext"/>
+            </bean>
+            <!--
+                TODO ShutdownHandlerProvider, sync with init work.
+                Needs to be custom OSGi implementation?
+            -->
+            <bean class="org.apache.brooklyn.rest.filter.CsrfTokenFilter"/>
+            <bean class="org.apache.brooklyn.rest.filter.RequestTaggingRsFilter"/>
+            <bean class="org.apache.brooklyn.rest.filter.NoCacheFilter"/>
+            <bean class="org.apache.brooklyn.rest.filter.HaHotCheckResourceFilter"/>
+            <bean class="org.apache.brooklyn.rest.filter.EntitlementContextFilter"/>
+            <bean class="org.apache.brooklyn.rest.util.ShutdownHandlerProvider">
+                <argument ref="shutdownHandler"/>
+            </bean>
+        </jaxrs:providers>
+
+        <jaxrs:properties>
+            <entry key="default.wae.mapper.least.specific" value="true"/>
+        </jaxrs:properties>
+
+    </jaxrs:server>
+
+    <bean class="org.apache.brooklyn.rest.util.ScannerInjectHelper">
+        <property name="server" ref="exampleRestApi"/>
+    </bean>
+</blueprint>
