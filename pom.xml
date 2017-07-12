@@ -22,9 +22,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.apache.brooklyn</groupId>
+        <artifactId>brooklyn-downstream-parent</artifactId>
+        <version>0.11.0</version> <!-- BROOKLYN_VERSION -->
+    </parent>
+
     <groupId>io.cloudsoft.brooklyn</groupId>
-    <artifactId>web-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>web-plugin-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version> <!-- WEB_PLUGIN_VERSION -->
     <modules>
         <module>web-plugin-endpoint</module>
         <module>web-plugin-feature</module>
@@ -32,13 +38,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <brooklyn.version>0.11.0</brooklyn.version>  <!-- BROOKLYN_VERSION -->
-        <karaf.version>4.0.8</karaf.version>
-        <maven-bundle-plugin.version>3.2.0</maven-bundle-plugin.version>
-        <cxf.version>3.1.10</cxf.version>
-        <fasterxml.jackson.version>2.7.5</fasterxml.jackson.version>
-        <slf4j.version>1.7.14</slf4j.version>
-        <testng.version>6.9.13.6</testng.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <Import-Package>*</Import-Package>
         <Export-Package>!*</Export-Package>
@@ -87,50 +86,4 @@
         </dependencies>
     </dependencyManagement>
     
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>${maven-bundle-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>${build-helper-maven-plugin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <instructions>
-                        <Import-Package>${Import-Package}</Import-Package>
-                        <Export-Package>${Export-Package}</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

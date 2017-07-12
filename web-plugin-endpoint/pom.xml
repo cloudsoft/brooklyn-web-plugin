@@ -20,15 +20,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>web-plugin</artifactId>
-        <groupId>io.cloudsoft.brooklyn</groupId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>io.cloudsoft.brooklyn</groupId>
+        <artifactId>web-plugin-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version> <!-- WEB_PLUGIN_VERSION -->
+    </parent>
+
     <artifactId>web-plugin-endpoint</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>jar</packaging>
+
     <properties>
         <Export-Package>
             !*
@@ -62,4 +64,38 @@
             <artifactId>testng</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>${Import-Package}</Import-Package>
+                        <Export-Package>${Export-Package}</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
