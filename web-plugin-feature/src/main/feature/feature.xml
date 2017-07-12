@@ -19,4 +19,8 @@
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="${project.groupId}-${project.version}">
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+
+    <feature name="brooklyn-web-plugin-example" version="${project.version}" description="Brooklyn web plugin example">
+        <bundle>mvn:io.cloudsoft.brooklyn/web-plugin-endpoint/${project.version}</bundle>
+    </feature>
 </features>
