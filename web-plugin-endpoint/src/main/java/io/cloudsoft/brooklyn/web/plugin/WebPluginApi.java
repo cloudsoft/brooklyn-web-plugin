@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ContextResolver;
 
+import org.apache.brooklyn.api.entity.Entity;
 import org.apache.brooklyn.api.mgmt.ManagementContext;
 
 import com.google.common.base.Preconditions;
@@ -46,7 +47,8 @@ public class WebPluginApi {
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/{entityId}")
     public String endpoint(@PathParam("entityId") final String entityId) {
-        return mgmt().getEntityManager().getEntity(entityId)+"";
+        Entity entity = mgmt().getEntityManager().getEntity(entityId);
+        return entity == null ? "Entity "+entityId+" not found in Brooklyn" : entity.getDisplayName();
     }
 
 }
