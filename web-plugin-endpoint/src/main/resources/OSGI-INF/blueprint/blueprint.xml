@@ -29,9 +29,13 @@
     <reference id="localManagementContext"
                interface="org.apache.brooklyn.core.mgmt.internal.ManagementContextInternal"/>
 
+<!-- this seems to break JaaS if this bundle is uninstalled; also the holder isn't used by downstream bundles
+     so not sure why this was here, and if code does want to use the holder it will be populated due to its
+     originating bundle ... but the holder/singleton is ugly, and direct access to the reference above is better
     <bean class="org.apache.brooklyn.rest.security.jaas.ManagementContextHolder">
         <property name="managementContext" ref="localManagementContext"/>
     </bean>
+-->
 
     <reference id="shutdownHandler" interface="org.apache.brooklyn.core.mgmt.ShutdownHandler"/>
 
